@@ -1,0 +1,9 @@
+[package]
+name = "gifzo_rust_server"
+version = "0.1.0"
+authors = ["Koji.Ota"]
+
+[dependencies]
+
+[dependencies.iron]
+version = "*"

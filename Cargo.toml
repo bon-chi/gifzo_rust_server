@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["Koji.Ota"]
 
 [dependencies]
+router = "*"
 
 [dependencies.iron]
 version = "*"

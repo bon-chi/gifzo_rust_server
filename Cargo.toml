@@ -6,7 +6,6 @@ authors = ["Koji.Ota"]
 [dependencies]
 router = "*"
 handlebars-iron = "0.18.0"
-maplit = "*"
 rustc-serialize = "0.3"
 staticfile = "*"
 

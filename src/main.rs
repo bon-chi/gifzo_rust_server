@@ -1,3 +1,4 @@
+extern crate multipart;
 extern crate rustc_serialize;
 
 extern crate iron;
@@ -5,6 +6,10 @@ extern crate router;
 extern crate staticfile;
 extern crate mount;
 extern crate handlebars_iron as hbs;
+
+use std::fs::File;
+use std::io::Read;
+use multipart::server::{Multipart, Entries, SaveResult};
 
 use rustc_serialize::json::{Json, ToJson};
 use std::collections::BTreeMap;
@@ -45,7 +50,7 @@ fn main() {
         let mut resp = Response::new();
         let data = Giff {
             title: "gif11".to_string(),
-            url: "gif/giphy.gif".to_string(), 
+            url: "gif/giphy.gif".to_string(),
         };
         resp.set_mut(Template::new("index", data)).set_mut(status::Ok);
         println!{"{:?}",resp};
@@ -61,4 +66,44 @@ fn main() {
     // Iron::new(router).http("localhost:3000").unwrap();
     // Iron::new(chain).http("localhost:3000").unwrap();
     Iron::new(mounts).http("localhost:3000").unwrap();
+}
+
+fn recieve_gif(request: &mut Request) -> IronResult<Response> {
+    match Multipart::from_request(request) {
+        Ok(mut multipart) => {
+            match multipart.save_all() {
+                SaveResult::Full(entries) => process_entries(entries),
+                SaveResult::Partial(entries, error) => {
+                    try!(process_entries(entries));
+                    Err(IronError::new(error, status::InternalServerError))
+                }
+                SaveResult::Error(error) => Err(IronError::new(error, status::InternalServerError)),
+            }
+        }
+        Err(_) => Ok(Response::with((status::BadRequest, "The request is not multipart"))),
+    }
+}
+
+fn process_entries(entries: Entries) -> IronResult<Response> {
+    for (name, field) in entries.fields {
+        println!(r#"Field "{}": "{}""#, name, field);
+    }
+
+    for (name, savedfile) in entries.files {
+        let filename = match savedfile.filename {
+            Some(s) => s,
+            None => "None".into(),
+        };
+        let mut file = match File::open(savedfile.path) {
+            Ok(file) => file,
+            Err(error) => {
+                return Err(IronError::new(error,
+                                          (status::InternalServerError,
+                                           "Server couldn't save file")))
+            }
+        };
+
+        println!(r#"Field "{}" is file "{}":"#, name, filename);
+    }
+    Ok(Response::with((status::Ok, "Multipart data is processed")))
 }

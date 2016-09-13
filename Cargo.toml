@@ -8,9 +8,12 @@ router = "*"
 handlebars-iron = "0.18.0"
 rustc-serialize = "0.3"
 staticfile = "*"
+iron = "0.4.0"
 
-[dependencies.iron]
+[dependencies.multipart]
 version = "*"
+default-features = false
+features = ["server", "iron"]
 
 [dependencies.mount]
 git = "https://github.com/iron/mount.git"

@@ -4,13 +4,11 @@ version = "0.1.0"
 authors = ["Koji.Ota"]
 
 [dependencies]
-router = "*"
-handlebars-iron = "0.18.0"
-rustc-serialize = "0.3"
-staticfile = "*"
+staticfile = "0.2.0"
+mount = "0.1.0"
+iron = "0.3.0"
 
-[dependencies.iron]
-version = "*"
-
-[dependencies.mount]
-git = "https://github.com/iron/mount.git"
+[dependencies.multipart]
+version = "0.7"
+default-features = false
+features = ["server", "iron"]

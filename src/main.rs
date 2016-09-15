@@ -17,18 +17,31 @@ use multipart::server::{Multipart, Entries, SaveResult};
 fn main() {
     let mut mounts = Mount::new();
     mounts.mount("/gifs/", Static::new(Path::new("src/templates/gif/")))
-        .mount("/", process_request);
-    // .mount("/", pr);
+          // .mount("/", process_request);
+    .mount("/", pr);
     Iron::new(mounts).http("localhost:3000").unwrap();
 }
 
 fn pr(request: &mut iron::prelude::Request) -> IronResult<Response> {
+    println!{"request is {:?}", request};
+    let mut body = String::new();
+    let bodyy = &mut body;
+    request.body.read_to_string(bodyy);
+    println!{"body is {:?}", bodyy};
     match Multipart::from_request(request) {
         Ok(mut multipart) => {
+            multipart.foreach_entry(|entry| {
+                // let body: String = String::new();
+                // let data = entry.data;
+                // data.read_to_string(body);
+                // println!("body is: {:?}", body);
+                println!("body is: {:?}", entry.data.as_text());
+                println!("entry is: {}", entry.name);
+            });
             // println!("boudary is :{:?}", multipart);
             // println!("name is :{}", multipart.read_entry().unwrap().unwrap().name);
-            println!("data is :{}",
-                     multipart.read_entry().unwrap().unwrap().data.as_text().unwrap());
+            // println!("data is :{}",
+            // multipart.read_entry().unwrap().unwrap().data.as_text().unwrap());
             // println!("data is :{}",
             //          multipart.read_entry()
             //              .unwrap()

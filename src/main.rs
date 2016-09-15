@@ -18,7 +18,7 @@ use multipart::server::{Multipart, Entries, SaveResult};
 fn main() {
     let mut mounts = Mount::new();
     mounts.mount("/gifs/", Static::new(Path::new("src/templates/gif/")))
-        .mount("/", process_request);
+          .mount("/", process_request);
     // .mount("/", pr);
     Iron::new(mounts).http("localhost:3000").unwrap();
 }
@@ -117,8 +117,10 @@ fn process_entries(entries: Entries) -> IronResult<Response> {
             }
         };
         // fs::copy(file_path, "./../gif/hoge.gif");
+        // loop {}
         let file_name = filename.clone();
         fs::copy(file_path, format!("{}{}", "src/templates/gif/", file_name));
+        println!("filenam is === {}", file_name);
         // fs::copy(file_path, "src/templates/gif/gif.gif");
         // fs::copy("/Users/200246/development/Rust/gifzo_rust_server/src/templates/multipart.\
         //           VB8HiH883msT/ZrDYnpBoA9tW",

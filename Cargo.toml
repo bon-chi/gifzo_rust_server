@@ -9,7 +9,6 @@ mount = "0.1.0"
 iron = "0.3.0"
 
 [dependencies.multipart]
-path = "multipart"
 version = "0.7"
 default-features = false
 features = ["server", "iron"]
